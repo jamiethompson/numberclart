@@ -7,7 +7,14 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "types": ["node"]
+    "jsx": "preserve",
+    "types": ["vite/client", "node"]
   },
-  "include": ["engine/**/*.ts", "vitest.config.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "engine/**/*.ts",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ]
 }
