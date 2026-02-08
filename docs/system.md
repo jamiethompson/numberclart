@@ -19,6 +19,11 @@ Design priorities are clarity over cleverness, determinism over flexibility, and
 - Board: fixed 5×5 grid, orthogonal adjacency only.
 - Tile: `value` (1–5), `strain` (0–3), stable `id`.
 
+### Initial Seeding
+- On game creation, the engine spawns **two tiles** using the same weighted spawn rules as the normal spawn phase.
+- Seeding is deterministic and advances RNG state; it does not advance the turn counter.
+- Rationale: a non‑inert starting board is required for reliable mobile interaction while keeping the engine authoritative.
+
 ### Turn Lifecycle (Authoritative Order)
 1. Player Action
 2. Merge Resolution
@@ -52,12 +57,13 @@ The game ends when **no legal moves** and **no merges** are possible.
 ### Determinism
 Given the same initial state, move sequence, and RNG seed, the engine must produce identical states and events.
 
-## UI Operation (Phase 2)
-Phase 2 provides a minimal web UI with no polish systems. Responsibilities are limited to rendering and input wiring.
+## UI Operation (Phase 2–3)
+Phases 2–3 provide a minimal web UI with no polish systems. Responsibilities are limited to rendering and input wiring.
 
 - **Rendering:** Show the 5×5 grid, draw tiles with numeric values, and distinguish empty cells.
-- **Input:** Desktop arrow keys only.
+- **Input:** Desktop arrow keys and mobile swipe gestures.
 - **Move mapping:** Each arrow key press selects the first legal move in top‑to‑bottom, left‑to‑right scan order for that direction.
+- **Swipe mapping:** Pointer‑event swipes resolve to a single direction based on dominant axis and a minimum movement threshold.
 - **State updates:** UI replaces its state with the engine’s returned state for each successful move.
 - **Game over:** Input disabled; board remains visible.
 
@@ -66,13 +72,15 @@ Phase 2 provides a minimal web UI with no polish systems. Responsibilities are l
 - **Vue 3 + Vite + plain CSS:** Lightweight, predictable, minimal configuration, consistent with architecture spec.
 - **No UI rule logic:** Prevents drift between engine and UI; keeps all mechanics authoritative in the engine.
 - **Minimal Phase 2 styling:** Ensures focus on correctness, not feel or polish.
+- **Initial seeding in engine:** Keeps the UI passive while ensuring the game is playable at start.
 
 ## Watch‑Outs
-- Do not add animations, gestures, sound, haptics, or persistence in Phase 2.
+- Do not add animations, sound, haptics, or visual polish in Phase 3.
 - Do not mutate engine state directly in the UI.
 - Do not infer or predict rule outcomes in the UI.
 - Blocked moves must not advance the turn.
 - Keep event ordering and turn lifecycle strictly aligned with the reference walkthrough.
+- Prevent browser scroll and zoom on the play surface.
 
 ## Current Phase
-Phase 2: Minimal Web UI. The system is intentionally plain. If it feels polished, something is out of scope.
+Phase 3: Mobile‑First Interaction. The system is intentionally plain. If it feels polished, something is out of scope.

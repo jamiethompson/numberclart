@@ -17,12 +17,17 @@ function serializeState(state: GameState): string {
 }
 
 describe("Numberclart engine", () => {
-  it("createGame returns an empty 5x5 board", () => {
+  it("createGame seeds two tiles deterministically", () => {
     const state = createGame(1);
+    const stateRepeat = createGame(1);
+
     expect(state.board.length).toBe(BOARD_SIZE);
     expect(state.board[0].length).toBe(BOARD_SIZE);
+
     const tiles = state.board.flat().filter(Boolean);
-    expect(tiles.length).toBe(0);
+    expect(tiles.length).toBe(2);
+
+    expect(serializeState(state)).toBe(serializeState(stateRepeat));
   });
 
   it("valid move advances the turn and emits move", () => {
