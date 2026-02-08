@@ -3,8 +3,10 @@ import { ref } from "vue";
 import GameBoard from "./ui/GameBoard.vue";
 import { applyMove, createGame, getLegalMoves, type Direction, type GameState } from "../engine";
 import { useKeyboardInput } from "./ui/useKeyboardInput";
+import { useSwipeInput } from "./ui/useSwipeInput";
 
 const state = ref<GameState>(createGame());
+const surfaceRef = ref<HTMLElement | null>(null);
 
 const handleDirection = (dir: Direction) => {
   if (state.value.gameOver) {
@@ -26,10 +28,11 @@ const handleDirection = (dir: Direction) => {
 };
 
 useKeyboardInput(handleDirection, () => !state.value.gameOver);
+useSwipeInput(surfaceRef, handleDirection, () => !state.value.gameOver);
 </script>
 
 <template>
-  <div class="game">
+  <div ref="surfaceRef" class="game">
     <GameBoard :board="state.board" />
     <div v-if="state.gameOver" class="status">Game Over</div>
   </div>
